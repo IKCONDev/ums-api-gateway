@@ -1,0 +1,53 @@
+server:
+  port: 9191
+
+spring:
+  application:
+    name: UMS-API-GATEWAY
+  cloud:
+    gateway:
+      routes:
+        - id: UMS-EMPLOYEE-SERVICE
+          uri: lb://UMS-EMPLOYEE-SERVICE
+          predicates:
+            - Path=/employees/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: UMS-EMPLOYEE-SERVICE
+                fallbackuri: forward:/employeeServiceFallBack
+        - id: UMS-DEPARTMENT-SERVICE
+          uri: lb://UMS-DEPARTMENT-SERVICE
+          predicates:
+            - Path=/departments/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: UMS-DEPARTMENT-SERVICE
+                fallbackuri: forward:/departmentServiceFallBack
+
+
+hystrix:
+  command:
+    fallbackcmd:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 4000
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream
+                    
+#The below is added in git repository as part of UMS MS Config Server and not required here      
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka/
+#  instance:
+#    hostname: localhost
