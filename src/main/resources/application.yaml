@@ -1,5 +1,5 @@
 server:
-  port: 9191
+  port: 8012
 
 spring:
   application:
@@ -7,6 +7,12 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: UMS-LOGIN
+          uri: lb://UMS-AUTHENTICATION-SERVICE
+          predicates:
+            - Path=/users/login
+            - Method=POST
+          
         - id: UMS-EMPLOYEE-SERVICE
           uri: lb://UMS-EMPLOYEE-SERVICE
           predicates:
@@ -16,6 +22,7 @@ spring:
               args:
                 name: UMS-EMPLOYEE-SERVICE
                 fallbackuri: forward:/employeeServiceFallBack
+                
         - id: UMS-DEPARTMENT-SERVICE
           uri: lb://UMS-DEPARTMENT-SERVICE
           predicates:
@@ -25,8 +32,25 @@ spring:
               args:
                 name: UMS-DEPARTMENT-SERVICE
                 fallbackuri: forward:/departmentServiceFallBack
-
-
+        
+        - id: UMS-AUTHENTICATION-SERVICE
+          uri: lb://UMS-AUTHENTICATION-SERVICE
+          predicates:
+            - Path=/users/**
+            - Method=GET,POST,PUT,DELETE,PATCH
+                     
+        - id: GET-USER-EVENTS
+          uri: lb://UMS-BATCH-SERVICE
+          predicates:
+            - Path=/teams/events/**
+            - Method=GET
+            
+        - id: AZURE-USERS
+          uri: lb://UMS-BATCH-SERVICE
+          predicates:
+            - Path=/azure/users/**
+            - Method=POST
+    
 hystrix:
   command:
     fallbackcmd:
