@@ -51,6 +51,12 @@ spring:
           predicates:
             - Path=/azure/users/**
             - Method=POST
+            
+        - id: AZURE-USERS
+          uri: lb://UMS-ACTIONITEMS-SERVICE
+          predicates:
+            - Path=/api/actions/**
+            - Method=POST
     
 hystrix:
   command:
