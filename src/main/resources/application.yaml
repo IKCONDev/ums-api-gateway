@@ -17,6 +17,7 @@ spring:
           uri: lb://UMS-EMPLOYEE-SERVICE
           predicates:
             - Path=/employees/**
+            - Method=GET,POST,PUT,DELETE
           filters:
             - name: CircuitBreaker
               args:
