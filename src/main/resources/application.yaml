@@ -44,13 +44,7 @@ spring:
           uri: lb://UMS-BATCH-SERVICE
           predicates:
             - Path=/teams/events/**
-            - Method=GET
-            
-        - id: AZURE-USERS
-          uri: lb://UMS-BATCH-SERVICE
-          predicates:
-            - Path=/azure/users/**
-            - Method=POST
+            - Method=GET,POST
             
         - id: AZURE-USERS
           uri: lb://UMS-ACTIONITEMS-SERVICE
