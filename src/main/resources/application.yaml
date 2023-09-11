@@ -50,7 +50,15 @@ spring:
           uri: lb://UMS-ACTIONITEMS-SERVICE
           predicates:
             - Path=/api/actions/**
-            - Method=POST
+            - Method=GET,POST,PUT,DELETE
+            
+        - id: EVENTS
+          uri: lb://UMS-EVENT-SERVICE
+          predicates:
+            - Path=/meetings/**
+            - Method=GET,POST,PUT,DELETE
+            
+        
     
 hystrix:
   command:
