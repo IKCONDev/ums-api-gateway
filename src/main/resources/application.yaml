@@ -58,6 +58,12 @@ spring:
             - Path=/meetings/**
             - Method=GET,POST,PUT,DELETE
             
+        - id: TASKS
+          uri: lb://UMS-TASK-SERVICE
+          predicates:
+            - Path=/task/**
+            - Method=GET,POST,PUT,DELETE
+            
         
     
 hystrix:
