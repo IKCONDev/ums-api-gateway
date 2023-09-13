@@ -63,6 +63,12 @@ spring:
           predicates:
             - Path=/task/**
             - Method=GET,POST,PUT,DELETE
+        
+        - id: NLP
+          uri: lb://UMS-NLP-SERVICE
+          predicates:
+            - Path=/nlp/**
+            - Method=GET,POST,PUT,DELETE
             
         
     
