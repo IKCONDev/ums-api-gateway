@@ -43,11 +43,11 @@ spring:
         - id: GET-USER-EVENTS
           uri: lb://UMS-BATCH-SERVICE
           predicates:
-            - Path=/teams/events/**
+            - Path=/teams/**
             - Method=GET,POST
             
         - id: AZURE-USERS
-          uri: lb://UMS-ACTIONITEMS-SERVICE
+          uri: lb://UMS-MEETING-SERVICE
           predicates:
             - Path=/api/actions/**
             - Method=GET,POST,PUT,DELETE
@@ -59,7 +59,7 @@ spring:
             - Method=GET,POST,PUT,DELETE
             
         - id: TASKS
-          uri: lb://UMS-TASK-SERVICE
+          uri: lb://UMS-MEETING-SERVICE
           predicates:
             - Path=/task/**
             - Method=GET,POST,PUT,DELETE
