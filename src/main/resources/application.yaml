@@ -53,7 +53,7 @@ spring:
             - Method=GET,POST,PUT,DELETE
             
         - id: EVENTS
-          uri: lb://UMS-EVENT-SERVICE
+          uri: lb://UMS-MEETING-SERVICE
           predicates:
             - Path=/meetings/**
             - Method=GET,POST,PUT,DELETE
