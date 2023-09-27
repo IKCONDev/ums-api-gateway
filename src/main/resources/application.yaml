@@ -46,22 +46,10 @@ spring:
             - Path=/teams/**
             - Method=GET,POST
             
-        - id: AZURE-USERS
-          uri: lb://UMS-MEETING-SERVICE
-          predicates:
-            - Path=/api/actions/**
-            - Method=GET,POST,PUT,DELETE
-            
         - id: EVENTS
           uri: lb://UMS-MEETING-SERVICE
           predicates:
-            - Path=/meetings/**
-            - Method=GET,POST,PUT,DELETE
-            
-        - id: TASKS
-          uri: lb://UMS-MEETING-SERVICE
-          predicates:
-            - Path=/task/**
+            - Path=/meetings/**,/actions/**,/task/**
             - Method=GET,POST,PUT,DELETE
         
         - id: NLP
