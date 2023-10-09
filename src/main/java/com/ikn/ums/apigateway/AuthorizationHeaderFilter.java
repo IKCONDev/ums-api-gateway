@@ -1,11 +1,5 @@
 package com.ikn.ums.apigateway;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.interfaces.RSAPublicKey;
-import java.text.ParseException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -16,19 +10,10 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
-import com.auth0.jwk.Jwk;
-import com.auth0.jwk.JwkException;
-import com.auth0.jwk.JwkProvider;
-import com.auth0.jwk.UrlJwkProvider;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.InvalidClaimException;
-import com.auth0.jwt.exceptions.SignatureVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 /*
  *This filter executes before a particular route or path or 
@@ -36,6 +21,7 @@ import reactor.core.publisher.Mono;
  *In order to execute this filter first before any request it should
  *extend from AbstractGatewayFilterFactory
 */
+@Slf4j
 @Component
 public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config>{
 
@@ -56,35 +42,21 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     //chain object is used to deletgate the flow to next filter in chain
     @Override
     public GatewayFilter apply(Config config) {
-	
+	log.info("AuthorizationHeaderFilter.apply() entered with args - config object");
 	return (exchange, chain)->{
 	    ServerHttpRequest request =  exchange.getRequest();
+	    log.info("AuthorizationHeaderFilter.apply() : Request object obtained");
 	    if(!request.getHeaders().containsKey("Authorization")) {
-	    	System.out.println("executed");
+	    	log.info("AuthorizationHeaderFilter.apply() : Header doesn't contains Authorization token");
 		return onError(exchange, "No Authorization Header", HttpStatus.UNAUTHORIZED);	
 	    }
 	   String authorizationHeader =  request.getHeaders().get("Authorization").get(0);
+	   log.info("AuthorizationHeaderFilter.apply() :  Authorization header retrieved from request object");
 	   String jwtToken = authorizationHeader.replace("Bearer ","");
-	   
-	   Mono<Void> error = null;
-	   
-	   
-	   if(!isTeamsAccessTokenValid(jwtToken)) {
-		   error = onError(exchange, "Not a valid microsoft's access token", HttpStatus.UNAUTHORIZED);
-	   }
-	   else if(!isJwtValid(jwtToken)) {
-	        error  = onError(exchange, "Not a valid JWT Token", HttpStatus.UNAUTHORIZED);	
-	   }
-	   
-	   /*
 	   if(!isJwtValid(jwtToken)) {
-	        error  = onError(exchange, "Not a valid JWT Token", HttpStatus.UNAUTHORIZED);	
+		   log.info("AuthorizationHeaderFilter.apply() :  Authorization header retrieved from request object is not a valid one - UNAUTHORIZED");
+	       return onError(exchange, "Not a valid JWT Token", HttpStatus.UNAUTHORIZED);	
 	   }
-	   */
-	   if(error != null) {
-		   return error;
-	   }
-	   //pass execution to next filter in chain
 	   return chain.filter(exchange);
 	    };
     }
@@ -95,81 +67,37 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 	return response.setComplete();
     }
     
-    
-    private boolean isTeamsAccessTokenValid(String accessToken) {
-    	    
-            DecodedJWT jwt = JWT.decode(accessToken);
-            System.out.println(jwt.getKeyId());
-            System.out.println(jwt.getAlgorithm());
-            JwkProvider provider = null;
-            Jwk jwk = null;
-            Algorithm algorithm = null;
-
-            try {
-            
-                provider = new UrlJwkProvider(new URL("https://login.microsoftonline.com/07c65ba0-ad88-46c0-bee7-90912bc21e8e/discovery/keys"));
-                jwk = provider.get(jwt.getKeyId());
-                String alg =jwk.getAlgorithm();
-                System.out.println(alg);
-                algorithm = Algorithm.RSA256((RSAPublicKey)jwk.getPublicKey(),null);
-                //RSA256((RSAPublicKey) jwk.getPublicKey(), null);
-                System.out.println(jwk.getPublicKey());
-                //algorithm.verify(jwt);
-                try {
-                    JWTVerifier verifier = JWT.require(algorithm).withAudience("api://07c65ba0-ad88-46c0-bee7-90912bc21e8e")
-                            .build();
-                    //DecodedJWT jwt2 = verifier.verify(accessToken);
-                    return true;
-                } catch (TokenExpiredException e) {
-                    System.out.println("Token is expired");
-                    return false;
-                } catch (InvalidClaimException e) {
-                    System.out.println("Invalid Claim for Audience");
-                    return false;
-                }
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-                return false;
-            } catch (JwkException e) {
-                e.printStackTrace();
-                return false;
-            } catch (SignatureVerificationException e) {
-            	e.printStackTrace();
-                System.out.println(e.getMessage());
-                return false;
-            }
-    }
-    
-
     private boolean isJwtValid(String jwtToken) {
+    log.info("AuthorizationHeaderFilter.isJwtValid() entered with args - jwtToken : "+jwtToken);
 	boolean returnValue = true;
 	//get subject
 	String userId = null;
 	String role = null;
-	System.out.println("bearer executed");
 	try {
-	    userId= Jwts.parser()
+		 log.info("AuthorizationHeaderFilter.isJwtValid() is under execution...");
+	     userId= Jwts.parser()
 			.setSigningKey(env.getProperty("token.secret"))
 			.parseClaimsJws(jwtToken)
 			.getBody()
 			.getSubject();
-	    System.out.println("authorization success");
+	     if(userId == null || userId.isEmpty()){
+	    	 log.info("AuthorizationHeaderFilter.isJwtValid() invalid jwt token");
+	 	    returnValue = false;
+	 	} 
+	     log.info("AuthorizationHeaderFilter.isJwtValid() valid jwt token");
+	     log.info("AuthorizationHeaderFilter.isJwtValid() executed succesfully");
+	     return returnValue;
 	}//try
 	catch (Exception e) {
-		System.out.println("exception");
+		log.info("AuthorizationHeaderFilter.isJwtValid() : Exception occured while validating jwt token "+e.getMessage());
 	   returnValue = false;
+	   return returnValue;
 	   //response.setHeader("error",e.getMessage())
 //	   Map<String, String> tokenData = new HashMap<String, String>();
 //		tokenData.put("token", jwtToken);
 //		response.setContentType("application/json");
 //		new ObjectMapper().writeValue(response.getOutputStream(), tokenData);
-	}
-	if(userId == null || userId.isEmpty()){
-	    returnValue = false;
-	}  
-	System.out.println(returnValue);
-	return returnValue;
-    }
-   
+	} 
+   }
+    
 }
