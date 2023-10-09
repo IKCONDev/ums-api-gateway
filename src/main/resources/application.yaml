@@ -39,8 +39,8 @@ spring:
           predicates:
             - Path=/users/**
             - Method=GET,POST,PUT,DELETE,PATCH
-          filters:
-            - name: AuthorizationHeaderFilter
+          #filters:
+            #- name: AuthorizationHeaderFilter
                      
         - id: BATCHSERVICE
           uri: lb://UMS-BATCH-SERVICE
