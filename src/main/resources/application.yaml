@@ -37,7 +37,7 @@ spring:
         - id: UMS-ADMIN-SERVICE
           uri: lb://UMS-USERS-SERVICE
           predicates:
-            - Path=/users/**
+            - Path=/users/**, /user/**
             - Method=GET,POST,PUT,DELETE,PATCH
           #filters:
             #- name: AuthorizationHeaderFilter
