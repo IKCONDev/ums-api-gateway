@@ -28,6 +28,7 @@ spring:
           uri: lb://UMS-DEPARTMENT-SERVICE
           predicates:
             - Path=/departments/**
+            - Method=GET,POST,PUT,DELETE
           filters:
             - name: CircuitBreaker
               args:
@@ -37,7 +38,7 @@ spring:
         - id: UMS-ADMIN-SERVICE
           uri: lb://UMS-USERS-SERVICE
           predicates:
-            - Path=/users/**, /user/**, /roles/**
+            - Path=/users/**, /user/**, /roles/**,/org/**
             - Method=GET,POST,PUT,DELETE,PATCH
           #filters:
             #- name: AuthorizationHeaderFilter
@@ -53,8 +54,8 @@ spring:
           predicates:
             - Path=/meetings/**,/actions/**,/task/**
             - Method=GET,POST,PUT,DELETE
-          filters:
-            - name: AuthorizationHeaderFilter
+          #filters:
+            #- name: AuthorizationHeaderFilter
         
         - id: NLP
           uri: lb://UMS-NLP-SERVICE
