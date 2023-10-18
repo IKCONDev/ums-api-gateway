@@ -23,6 +23,7 @@ spring:
               args:
                 name: UMS-EMPLOYEE-SERVICE
                 fallbackuri: forward:/employeeServiceFallBack
+            - name: AuthorizationHeaderFilter 
                 
         - id: UMS-DEPARTMENT-SERVICE
           uri: lb://UMS-DEPARTMENT-SERVICE
@@ -34,22 +35,31 @@ spring:
               args:
                 name: UMS-DEPARTMENT-SERVICE
                 fallbackuri: forward:/departmentServiceFallBack
+            - name: AuthorizationHeaderFilter 
         
-        - id: UMS-ADMIN-SERVICE
+        - id: UMS-ADMIN-SERVICE-USER
           uri: lb://UMS-USERS-SERVICE
           predicates:
-            - Path=/users/**, /user/**, /roles/**,/org/**
+            - Path=/users/**, /user/**
             - Method=GET,POST,PUT,DELETE,PATCH
           #filters:
             #- name: AuthorizationHeaderFilter
+            
+        - id: UMS-ADMIN-SERVICE-ROLES-ORG
+          uri: lb://UMS-USERS-SERVICE
+          predicates:
+            - Path=/roles/**,/org/**
+            - Method=GET,POST,PUT,DELETE,PATCH
+          filters:
+            - name: AuthorizationHeaderFilter
                      
-        - id: BATCHSERVICE
+        - id: UMS-BATCH-SERVICE
           uri: lb://UMS-BATCH-SERVICE
           predicates:
             - Path=/teams/**
             - Method=GET,POST
             
-        - id: EVENTS
+        - id: UMS-MEETINGS
           uri: lb://UMS-MEETING-SERVICE
           predicates:
             - Path=/meetings/**,/actions/**,/task/**
@@ -63,7 +73,7 @@ spring:
             - Path=/nlp/**
             - Method=GET,POST,PUT,DELETE
 token:
-  expiration_time: 86400
+  expiration_time: 864000
   secret: hgsd75767sdj87sd708bjh65
          
 hystrix:
