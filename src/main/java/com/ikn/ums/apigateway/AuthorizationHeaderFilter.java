@@ -1,5 +1,7 @@
 package com.ikn.ums.apigateway;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -12,6 +14,7 @@ import org.springframework.web.server.ServerWebExchange;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
@@ -57,6 +60,10 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 		   log.info("AuthorizationHeaderFilter.apply() :  Authorization header retrieved from request object is not a valid one - UNAUTHORIZED");
 	       return onError(exchange, "Not a valid JWT Token", HttpStatus.UNAUTHORIZED);	
 	   }
+//	   if(isJwtExpired(jwtToken)) {
+//		   log.info("AuthorizationHeaderFilter.apply() :  Authorization header retrieved from request object is not a valid one - UNAUTHORIZED");
+//	       return onError(exchange, "Not a valid JWT Token", HttpStatus.UNAUTHORIZED);	
+//	   }
 	   return chain.filter(exchange);
 	    };
     }
@@ -67,12 +74,32 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 	return response.setComplete();
     }
     
+    /**
+     * 
+     * @param jwtToken
+     * @return
+     */
+    /**
+    private boolean isJwtExpired(String jwtToken) {
+    	Date expiresAt = null;
+    	if(jwtToken != null && jwtToken != "") {
+    		expiresAt = Jwts.parser().setSigningKey(env.getProperty("token.secret"))
+		 .parseClaimsJwt(jwtToken)
+		 .getBody()
+		 .getExpiration();
+    	}
+    	System.out.println(expiresAt);
+    	return expiresAt.before(new Date());
+    }
+    */
+    
     private boolean isJwtValid(String jwtToken) {
     log.info("AuthorizationHeaderFilter.isJwtValid() entered with args - jwtToken : "+jwtToken);
 	boolean returnValue = true;
 	//get subject
 	String userId = null;
 	String role = null;
+	Date expiresAt = null;
 	try {
 		 log.info("AuthorizationHeaderFilter.isJwtValid() is under execution...");
 	     userId= Jwts.parser()

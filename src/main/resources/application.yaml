@@ -54,8 +54,8 @@ spring:
           predicates:
             - Path=/meetings/**,/actions/**,/task/**
             - Method=GET,POST,PUT,DELETE
-          #filters:
-            #- name: AuthorizationHeaderFilter
+          filters:
+            - name: AuthorizationHeaderFilter
         
         - id: NLP
           uri: lb://UMS-NLP-SERVICE
@@ -63,7 +63,7 @@ spring:
             - Path=/nlp/**
             - Method=GET,POST,PUT,DELETE
 token:
-  expiration_time: 864000000
+  expiration_time: 86400
   secret: hgsd75767sdj87sd708bjh65
          
 hystrix:
