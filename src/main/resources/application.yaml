@@ -72,6 +72,12 @@ spring:
           predicates:
             - Path=/nlp/**
             - Method=GET,POST,PUT,DELETE
+            
+        - id: Notification
+          uri: lb://UMS-NOTIFICATION-SERVICE
+          predicates:
+            - Path=/notification/**
+            - Method=GET,POST,PUT,DELETE
 token:
   expiration_time: 864000
   secret: hgsd75767sdj87sd708bjh65
