@@ -78,6 +78,12 @@ spring:
           predicates:
             - Path=/notification/**
             - Method=GET,POST,PUT,DELETE
+            
+#        - id: BiReports
+#          uri: lb://UMS-BI-REPORTING-SERVIC
+#          predicates:
+#            - Path=/bireports/**
+#            - Method=GET,POST,PUT,DELETE
 token:
   expiration_time: 864000
   secret: hgsd75767sdj87sd708bjh65
