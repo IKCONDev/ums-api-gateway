@@ -85,7 +85,7 @@ spring:
             - Path=/reports/**
             - Method=GET,POST,PUT,DELETE
 token:
-  expiration_time: 864000
+  expiration_time: 8640000
   secret: hgsd75767sdj87sd708bjh65
          
 hystrix:
