@@ -62,7 +62,7 @@ spring:
         - id: UMS-MEETINGS
           uri: lb://UMS-MEETING-SERVICE
           predicates:
-            - Path=/meetings/**,/actions/**,/task/**
+            - Path=/meetings/**,/actions/**,/task/**,/taskCategory/**
             - Method=GET,POST,PUT,DELETE
           filters:
             - name: AuthorizationHeaderFilter
