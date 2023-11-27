@@ -82,7 +82,7 @@ spring:
         - id: BiReports
           uri: lb://UMS-BI-REPORTING-SERVICE
           predicates:
-            - Path=/reports/**
+            - Path=/reports/**,/actionReports/**
             - Method=GET,POST,PUT,DELETE
 token:
   expiration_time: 8640000
