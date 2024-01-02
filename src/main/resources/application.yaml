@@ -58,7 +58,7 @@ spring:
           uri: lb://UMS-BATCH-SERVICE
           predicates:
             - Path=/teams/**
-            - Method=GET,POST
+            - Method=GET,POST,PUT,DELETE
             
         - id: UMS-MEETINGS
           uri: lb://UMS-MEETING-SERVICE
