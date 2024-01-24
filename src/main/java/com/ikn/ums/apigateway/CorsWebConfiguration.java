@@ -52,6 +52,8 @@ public class CorsWebConfiguration implements WebFluxConfigurer{
 	        corsConfiguration.addExposedHeader("twoFactorAuth");
             corsConfiguration.addExposedHeader("jwtExpiry");
             corsConfiguration.addExposedHeader("userRoleMenuItemsPermissionMap");
+            corsConfiguration.addExposedHeader("loginAttempts");
+            corsConfiguration.addExposedHeader("userActive");
 	        UrlBasedCorsConfigurationSource corsConfigurationSource = new UrlBasedCorsConfigurationSource();
 	        corsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
 	        return new CorsWebFilter(corsConfigurationSource);
