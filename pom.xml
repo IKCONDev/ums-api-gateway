@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.ikn.ums.apigateway</groupId>
 	<artifactId>ums-api-gateway</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>ALPHA-0.1</version>
 	<name>ums-api-gateway</name>
 	<description>UMS Routing Gateway</description>
 	<properties>

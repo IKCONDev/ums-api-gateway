@@ -42,6 +42,12 @@ public class CorsWebConfiguration implements WebFluxConfigurer{
 	        corsConfiguration.addAllowedOrigin("http://10.10.1.191:4200");
 	        corsConfiguration.addAllowedOrigin("http://10.10.1.40:4200");
 	        corsConfiguration.addAllowedOrigin("http://10.10.1.123:4200");
+	        //PROD IPS
+	        corsConfiguration.addAllowedOrigin("http://132.145.196.4:4200");
+	        corsConfiguration.addAllowedOrigin("http://10.0.0.80:4200");
+	        //QA
+	        corsConfiguration.addAllowedOrigin("http://132.145.186.188:4200");
+	        corsConfiguration.addAllowedOrigin("http://10.0.0.136:4200");
 	        //corsConfiguration.addAllowedOrigin("http://win-8c1huk79hrf.ikcon.administrator:8012");
 	        //corsConfiguration.addExposedHeader(HttpHeaders.SET_COOKIE);
 	        corsConfiguration.addExposedHeader("token");
